@@ -12,23 +12,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     var tableView: UITableView!
     
-    var modelSource = [
-        ("",""),
-        ("",""),
-        ("",""),
-        ("",""),
-        ("",""),
-        ("","")
-    ]
+    let datas = [["Rotation","Position","Change","Scale","Size"],["KeyFrame"],["Transition"],["Spring"],["Group"],["DrawLine","WaveLine","Fire","FireTwo","Login"]]
+    let titles : [String] = ["CABaseAnimation","CAKeyframeAnimation","TransitionAnimation","SpringAnimation","GroupAnimation","综合实例"]
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "主页面"
+        if title == nil {
+            title = "主页面"
+        }
         tableView = UITableView(frame: UIScreen.main.bounds)
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.sectionHeaderHeight = 40
         tableView.tableFooterView = UIView()
     }
 
@@ -36,10 +33,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return datas.count
+    }
 
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return titles[section]
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return modelSource.count
+        return datas[section].count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -47,13 +51,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if cell == nil {
             cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
         }
-        cell?.textLabel?.text = "测试"
+        cell?.textLabel?.text = datas[indexPath.section][indexPath.row]
         return cell!
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
+        let name = datas[indexPath.section][indexPath.row] + "Controller"
+        print("AnimationPrimary" + "." + name)
+        if let type = NSClassFromString("AnimationPrimary" + "." + name) {
+            let vc = (type as! UIViewController.Type).init()
+            show(vc, sender: nil)
+        }
     }
 
 }
